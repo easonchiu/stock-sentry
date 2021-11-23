@@ -3,6 +3,7 @@
 	"version": "0.0.3",
 	"description": "vscode stock sentry",
 	"license": "MIT",
+  "publisher": "EasonChiu",
 	"engines": {
 		"vscode": "^1.62.0"
 	},
