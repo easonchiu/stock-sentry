@@ -9,15 +9,13 @@ const loopTimer: any = []
  * @param {*} context 插件上下文
  */
 exports.activate = function (context: any) {
-  const bar = createStatusBarItem(0)
-  loopFillData(bar, 0)
+  init()
 
   // 注册命令
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(function() {
       console.log('stock-sentry: on config change')
-      const bar = createStatusBarItem(0)
-      loopFillData(bar, 0)
+      init()
     })
   )
 }
@@ -32,10 +30,32 @@ exports.deactivate = function () {
   }
 }
 
-// 循环更新数据
-function loopFillData(bar: vscode.StatusBarItem, index: number) {
-  const symbol = getConfig<string>('symbol')
+// 初始化
+function init() {
+  const symbol = getConfig<string | Array<string>>('symbol')
+  let symbols: string[] = []
+  if (typeof symbol === 'string') {
+    symbols = [symbol]
+  } else if (Array.isArray(symbol)) {
+    symbols = [...symbol]
+  }
 
+  const bigVolume = getConfig<number | Array<number>>('bigVolume')
+  let bigVolumes: number[] = []
+  if (typeof bigVolume === 'number') {
+    bigVolumes = [bigVolume]
+  } else if (Array.isArray(symbol)) {
+    bigVolumes = [...bigVolume]
+  }
+
+  for (let i = 0; i < symbols.length; i++) {
+    const bar = createStatusBarItem(i)
+    loopFillData(bar, symbols[i], bigVolumes[i], i)
+  }
+}
+
+// 循环更新数据
+function loopFillData(bar: vscode.StatusBarItem, symbol: string, bigVolume: number, index: number) {
   if (!symbol) {
     bar.hide()
     return
@@ -50,7 +70,7 @@ function loopFillData(bar: vscode.StatusBarItem, index: number) {
   if (now < start || now > end) {
     bar.hide()
     setTimeout(() => {
-      loopFillData(bar, index)
+      loopFillData(bar, symbol, bigVolume, index)
     }, 1000 * 60)
     return
   }
@@ -58,7 +78,7 @@ function loopFillData(bar: vscode.StatusBarItem, index: number) {
   // 拉取数据并显示
   fetchData({
     symbol,
-    bigVolume: getConfig('bigVolume') || 2000,
+    bigVolume,
     cookie: getConfig('xueqiuCookie'),
   }).then((res) => {
     if (res) {
@@ -69,7 +89,7 @@ function loopFillData(bar: vscode.StatusBarItem, index: number) {
       bar.show()
     }
     loopTimer[index] = setTimeout(() => {
-      loopFillData(bar, index)
+      loopFillData(bar, symbol, bigVolume, index)
     }, getConfig('updateInterval') || 2000)
   })
 }

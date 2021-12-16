@@ -1,6 +1,6 @@
 {
 	"name": "stock-sentry",
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"description": "vscode stock sentry",
 	"license": "MIT",
 	"publisher": "EasonChiu",
@@ -32,36 +32,38 @@
 		"typescript": "^4.4.4"
 	},
 	"contributes": {
-		"properties": {
-			"stock-sentry.symbol": {
-				"type": "string",
-				"default": "sz000509",
-				"description": "监控的股票代码"
-			},
-			"stock-sentry.bigVolume": {
-				"type": "number",
-				"default": 2000,
-				"description": "大单监控，多少手以上的买卖单会特别提醒"
-			},
-			"stock-sentry.xueqiuCookie": {
-				"type": "string",
-				"default": "",
-				"description": "雪球cookie，用于监控大单"
-			},
-			"stock-sentry.updateInterval": {
-				"type": "number",
-				"default": 2000,
-				"description": "轮询间隔"
-			},
-			"stock-sentry.showTime": {
-				"type": "array",
-				"default": [
-					"9:00",
-					"15:30"
-				],
-				"description": "插件展示时间段"
-			}
-		}
+    "configuration": {
+      "properties": {
+        "stock-sentry.symbol": {
+          "type": "array",
+          "default": ["sz000509"],
+          "description": "监控的股票代码"
+        },
+        "stock-sentry.bigVolume": {
+          "type": "array",
+          "default": [2000],
+          "description": "大单监控，多少手以上的买卖单会特别提醒"
+        },
+        "stock-sentry.xueqiuCookie": {
+          "type": "string",
+          "default": "",
+          "description": "雪球cookie，用于监控大单"
+        },
+        "stock-sentry.updateInterval": {
+          "type": "number",
+          "default": 2000,
+          "description": "轮询间隔"
+        },
+        "stock-sentry.showTime": {
+          "type": "array",
+          "default": [
+            "9:00",
+            "15:30"
+          ],
+          "description": "插件展示时间段"
+        }
+      }
+    }
 	},
 	"scripts": {
 		"compile": "tsc -p ./",
