@@ -15,6 +15,14 @@ exports.activate = function (context: any) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(function() {
       console.log('stock-sentry: on config change')
+      loopTimer.forEach((t: any) => {
+        if (t) {
+          clearTimeout(t)
+        }
+      })
+      statusBarItemList.forEach(s => {
+        s.hide()
+      })
       init()
     })
   )
